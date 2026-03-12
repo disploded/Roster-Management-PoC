@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Calendar";
+    @model int;
+}
+
+@{
+    var today = DateTime.Now;
+    var month = Model;
+    var year = today.Year;
+    var monthName = new DateTime(year, month, 1).ToString("MMMM");
+    var firstDayOfMonth = new DateTime(year, month, 1);
+    int daysInMonth = DateTime.DaysInMonth(year, month);
+
+    // Adjust DayOfWeek to start from Monday (0) instead of Sunday (0 by default in C#)
+    int firstDayIndex = ((int)firstDayOfMonth.DayOfWeek + 6) % 7;
+}
+
+<div class="month">
+    <ul>
+        <li class="prev"><a class="text-decoration-none link-secondary" asp-controller="Home" asp-action="Calendar" asp-route-month="@(month - 1)"><button>&#10094;</button></a></li>
+        <li class="next"><a class="text-decoration-none link-secondary" asp-controller="Home" asp-action="Calendar" asp-route-month="@(month + 1)"><button>&#10095;</button></a></li>
+        <li class="fs-2">@monthName<br><span style="font-size:18px">@year</span></li>
+    </ul>
+</div>
+
+<ul class="weekdays">
+    <li>Monday</li>
+    <li>Tuesday</li>
+    <li>Wednesday</li>
+    <li>Thursday</li>
+    <li>Friday</li>
+    <li>Saturday</li>
+    <li>Sunday</li>
+</ul>
+
+<ul class="days">
+    @{
+        // Fill empty spaces before the first day of the month
+        for (int i = 0; i < firstDayIndex; i++)
+        {
+            <li class="pe-none">&nbsp;</li>
+        }
+
+        // Loop through the days of the month
+        for (int day = 1; day <= daysInMonth; day++)
+        {
+            if (day == today.Day && month == today.Month)
+            {
+                <li><span class="active">@day</span></li>
+            }
+            else
+            {
+                <li>@day</li>
+            }
+        }
+    }
+</ul>
